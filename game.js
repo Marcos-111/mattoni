@@ -22,12 +22,20 @@ var bricks = [];
 for (var c = 0; c < brickColumnCount; c++) {
   bricks[c] = [];
   for (var r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
+    bricks[c][r] = { x: 0, y: 0, status: 1};
   }
 }
 
+var score = 0;
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+
+function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Score: "+ score, 8, 20);
+}
 
 function keyDownHandler(e) {
   if (e.key == "Right" || e.key == "ArrowRight") {
@@ -55,6 +63,7 @@ function collisionDetection() {
           y > b.y &&
           y < b.y + brickHeight
         ) {
+          score++;
           dy = -dy;
           b.status = 0;
         }
@@ -100,6 +109,7 @@ function draw() {
   drawBall();
   drawPaddle();
   collisionDetection();
+  drawScore();
 
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
     dx = -dx;
@@ -115,6 +125,11 @@ function draw() {
       alert("GAME OVER");
       document.location.reload();
       clearInterval(interval); // Needed for Chrome to end game
+    }
+    if(score == brickRowCount*brickColumnCount) {
+        alert("YOU WIN, CONGRATULATIONS!");
+        document.location.reload();
+        clearInterval(interval); // Needed for Chrome to end game
     }
   }
 
